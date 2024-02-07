@@ -1,0 +1,81 @@
+---
+title: "Classification"
+author: "Sarthak"
+format: html
+editor: visual
+---
+```{r}
+ISLR2::Publication|>
+  mutate(
+    mech = stats::relevel(as.factor(mech),
+                             ref = "Contract")
+  ) ->mech1
+mech1
+multi_log <- nnet::multinom(
+  formula = mech ~ multi + sampsize + time + status + budget, 
+  data = mech1
+)
+summary(multi_log)
+levels(mech1$mech)
+# calculate z-statistics of coefficients
+z_stats <- summary(multi_log)$coefficients/
+  summary(multi_log)$standard.errors
+z_stats
+p_values <- (1 - pnorm(abs(z_stats)))*2
+
+data.frame(t(p_values))
+
+
+# display p-values in transposed data frame
+data.frame(t(p_values))
+
+glm(
+   mech ~  multi + sampsize + time + status + budget,
+  data = mech1,
+  family = binomial
+) -> mod_logit
+multinom(mech1)
+DescTools::PseudoR2(mod_logit,
+                    which = c("McFadden", "CoxSnell",
+                              "Nagelkerke", "Tjur"))
+
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
